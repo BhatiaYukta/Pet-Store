@@ -1,25 +1,91 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react"
+import styled from "styled-components"
 
-function App() {
+import PetList from "./components/PetList";
+const Container = styled.div`
+display: flex,
+flex-direction:column;
+`;
+const Header = styled.div`
+display:flex;
+flex-direction: row;
+background-color: white;
+color: black;
+padding: 15px;
+font-size:27px;
+font-weight:bold;
+box-shadow: 0 3px 6px 0 #555;
+justify-content:space-between;
+align-items:center;
+`
+const AppName = styled.div`
+display:flex;
+flex-direction:row;
+align-items:center;
+`
+const PetSoreImage = styled.img`
+width:90px;
+height:60px;
+margin:15px;
+`
+const MovieListContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 30px;
+  gap: 25px;
+  justify-content: space-evenly;;
+`;
+
+
+
+const App = () => {
+  const [petsInfo, setPetsInfo] = useState([])
+  const [count, setCount]=useState(0)
+
+  useEffect(() => {
+    fetch("https://petstore.swagger.io/v2/pet/findByStatus?status=available")
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data[0]["name"]);
+        setPetsInfo(data)
+      });
+  },[])
+ 
+  const uniqueNames = {};
+
+// Filter out duplicates based on the "name" property
+const uniqueData = petsInfo.reduce((acc, current) => {
+    // Check if the name is already in the uniqueNames object
+    if (!uniqueNames[current.name]) {
+        // If not, add it to the uniqueNames object and push it to the accumulator array
+        uniqueNames[current.name] = true;
+        acc.push(current);
+    }
+    return acc;
+}, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Container>
+      <Header>
+        <AppName>
+          <PetSoreImage src="/image.png"></PetSoreImage> 
+          Pet Store
+        </AppName>
+      </Header>
+      <MovieListContainer>
+        {/* {uniqueData.map((pets,index)=>{
+          // <h1>{pets["name"]}</h1>
+          console.log("petss",pets["name"])
+        })} */}
+       
+        {uniqueData?.length
+                    ? uniqueData.map((pets, index) => (<PetList key={index} pets={pets} />)
+                    ) : <span style={{ color: "black" }}>"No pets Search"</span>}
+      </MovieListContainer>
+    </Container>
+  )
 }
 
 export default App;
