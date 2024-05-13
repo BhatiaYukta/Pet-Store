@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import styled from "styled-components"
 
 import PetList from "./components/PetList";
+import AddPet from "./components/AddPet";
 const Container = styled.div`
 display: flex,
 flex-direction:column;
@@ -41,7 +42,7 @@ const MovieListContainer = styled.div`
 
 const App = () => {
   const [petsInfo, setPetsInfo] = useState([])
-  const [count, setCount]=useState(0)
+ 
 
   useEffect(() => {
     fetch("https://petstore.swagger.io/v2/pet/findByStatus?status=available")
@@ -74,12 +75,8 @@ const uniqueData = petsInfo.reduce((acc, current) => {
           Pet Store
         </AppName>
       </Header>
+      <AddPet/>
       <MovieListContainer>
-        {/* {uniqueData.map((pets,index)=>{
-          // <h1>{pets["name"]}</h1>
-          console.log("petss",pets["name"])
-        })} */}
-       
         {uniqueData?.length
                     ? uniqueData.map((pets, index) => (<PetList key={index} pets={pets} />)
                     ) : <span style={{ color: "black" }}>"No pets Search"</span>}
