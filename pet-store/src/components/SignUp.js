@@ -98,7 +98,7 @@ const Signup = () => {
             password: password,
             userStatus: 0
         };
-    
+
         // Send the formData to the server using fetch
         fetch("https://petstore.swagger.io/v2/user", {
             method: "POST",
@@ -107,29 +107,31 @@ const Signup = () => {
             },
             body: JSON.stringify(formData)
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log("Signup Successful:", data);
-            // Show success message
-            alert("Signup Successful!");
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            // Handle error
-        });
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Signup Successful:", data);
+                // Show success message
+                alert("Signup Successful!");
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                // Handle error
+            });
     };
 
     return (
         <>
-            <Header>
-
-                <SignupButton onClick={handleSignupButtonClick}>Signup</SignupButton>
-            </Header>
+        <div>
+      
+            <button onClick={handleSignupButtonClick}>Signup</button>
+                {/* <SignupButton onClick={handleSignupButtonClick}>Signup</SignupButton> */}
+         
+            </div>
             {showSignupPopup && (
                 <SignupPopup>
                     <CloseButton onClick={handleCloseSignupPopup}>Close</CloseButton>

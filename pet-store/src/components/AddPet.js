@@ -52,8 +52,8 @@ const AddButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: black; 
-  color: white;
+  background-color: white; 
+  color: black;
   border: none;
   border-radius: 6px;
   cursor: pointer;
