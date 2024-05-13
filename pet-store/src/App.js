@@ -79,6 +79,17 @@ const LoginSubmitButton = styled.button`
   cursor: pointer;
 `;
 
+const CloseButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+`;
 
 const App = () => {
   const [petsInfo, setPetsInfo] = useState([]);
@@ -87,6 +98,40 @@ const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loggedInUsername, setLoggedInUsername] = useState("");
+  const [idleTimeout, setIdleTimeout] = useState(null);
+  const [logoutMessage, setLogoutMessage] = useState("");
+
+  useEffect(() => {
+    // Add event listeners for user activity
+    const resetIdleTimeout = () => {
+      clearTimeout(idleTimeout);
+      const timeout = setTimeout(() => {
+        setLogoutMessage("You have been logged out due to inactivity.");
+        // alert("You have been logged out due to inactivity.");
+        handleLogout();
+      },  2 * 60 * 1000); 
+      setIdleTimeout(timeout);
+    };
+
+    const onActivity = () => {
+      resetIdleTimeout();
+      setLogoutMessage("");
+    };
+
+    // Add event listeners to reset the idle timeout on user activity
+    document.addEventListener("mousemove", onActivity);
+    document.addEventListener("keydown", onActivity);
+
+    // Initialize idle timeout
+    resetIdleTimeout();
+
+    // Cleanup event listeners
+    return () => {
+      document.removeEventListener("mousemove", onActivity);
+      document.removeEventListener("keydown", onActivity);
+      clearTimeout(idleTimeout);
+    };
+  }, [idleTimeout]);
 
   useEffect(() => {
     fetch("https://petstore.swagger.io/v2/pet/findByStatus?status=available")
@@ -99,6 +144,9 @@ const App = () => {
       });
   }, []);
 
+  const handleCloseSignupPopup = () => {
+    setShowLoginPopup(false);
+};
   const handleLogin = () => {
     fetch(`https://petstore.swagger.io/v2/user/login?username=${username}&password=${password}`)
       .then((res) => res.json())
@@ -127,15 +175,21 @@ const App = () => {
   const uniqueNames = {};
 
   // Filter out duplicates based on the "name" property
+  const MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER;
+
   const uniqueData = petsInfo.reduce((acc, current) => {
-    // Check if the name is already in the uniqueNames object
-    if (!uniqueNames[current.id]) {
+    // Check if the ID is greater than MAX_SAFE_INTEGER
+    const isInvalidId = current.id > MAX_SAFE_INTEGER;
+  
+    // Check if the name is already in the uniqueNames object and the ID is valid
+    if (!uniqueNames[current.id] && !isInvalidId) {
       // If not, add it to the uniqueNames object and push it to the accumulator array
       uniqueNames[current.id] = true;
       acc.push(current);
     }
     return acc;
   }, []);
+  
 
   return (
     <Container>
@@ -168,6 +222,7 @@ const App = () => {
 
       {showLoginPopup && (
         <LoginPopup>
+           <CloseButton onClick={handleCloseSignupPopup}>Close</CloseButton>
           <InputLabel>
             Username: {" "}
             <br></br>

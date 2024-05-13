@@ -229,7 +229,7 @@ const AddPet = (props) => {
                     <br />
                     <br />
                     <SubmitButton onClick={handleSaveButtonClick}>Submit</SubmitButton>
-                    <CloseButton onClick={handleCloseButtonClick}>Close Popup</CloseButton>
+                    <CloseButton onClick={handleCloseButtonClick}>Close</CloseButton>
                 </Popup>
             )}
             {showSuccessMessage && (

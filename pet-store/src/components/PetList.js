@@ -1,6 +1,7 @@
-import React,{useState} from "react"
-import styled from "styled-components"
+import React, { useState } from "react";
+import styled from "styled-components";
 import PetUpdatePopup from "./PetUpdatePopup";
+
 const PetsDiv = styled.div`
   display: flex;
   flex-direction: column;
@@ -25,52 +26,89 @@ const PetsName = styled.span`
   overflow: hidden;
 `;
 
-const UpdateButton = styled.button`
-  background-color: grey;
+const ActionButtons = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+`;
+
+const Button = styled.button`
+  background-color: ${({ bgColor }) => bgColor};
   color: white;
   border: none;
   border-radius: 4px;
   padding: 8px 16px;
   cursor: pointer;
   font-size: 16px;
-  margin-top: 10px;
 `;
 
 const PetList = (props) => {
-    const [showUpdatePopup, setShowUpdatePopup] = useState(false);
-    const imageURL = props.pets.photoUrls.filter(url => url && (url.startsWith('http://') || url.startsWith('https://')));
+  const [showUpdatePopup, setShowUpdatePopup] = useState(false);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const imageURL = props.pets.photoUrls.filter(url => url && (url.startsWith('http://') || url.startsWith('https://')));
 
-    const handleUpdateClick = () => {
-        setShowUpdatePopup(true);
-      };
-    return (
+  const handleUpdateClick = () => {
+    setShowUpdatePopup(true);
+  };
+
+  const handleDeleteClick = () => {
+    setShowDeletePopup(true);
+  };
+
+  const handleDeleteConfirmation = () => {
+    // Perform delete action here
+    fetch(`https://petstore.swagger.io/v2/pet/${props.pets.id}`, {
+      method: 'DELETE'
+    })
+    .then(response => {
+      // Handle response status, for example:
+      if (response.ok) {
+        console.log('Pet deleted successfully'); 
+        window.location.reload();
+        // Additional logic after successful deletion, if needed
+      } else {
+        console.error('Failed to delete pet');
+      }
+    })
+    .catch(error => {
+      console.error('Error occurred while deleting pet:', error);
+    })
+    .finally(() => {
+      setShowDeletePopup(false);
+    });
+  };
+
+  return (
+    <div>
+      <PetsDiv>
+        <CoverImage src="./Pet.png" />
+        <PetsName> ID: {props.pets.id}</PetsName>
+        <PetsName> Name: {props.pets.name}</PetsName>
+        <PetsName> Status: {props.pets.status}</PetsName>
+        <ActionButtons>
+          <Button bgColor="grey" onClick={handleUpdateClick}>Update</Button>
+          <Button bgColor="red" onClick={handleDeleteClick}>Delete</Button>
+        </ActionButtons>
+      </PetsDiv>
+      {showUpdatePopup && (
+        <PetUpdatePopup
+          pet={props.pets}
+          onUpdate={() => {
+            // Handle update logic here
+            setShowUpdatePopup(false);
+          }}
+          onClose={() => setShowUpdatePopup(false)}
+        />
+      )}
+      {showDeletePopup && (
         <div>
-            <PetsDiv>
-                {/* {imageURL[0] !== undefined ? (
-                    <CoverImage src={imageURL[0]} />
-                ) : (
-                    "Image Not Available"
-                )} */}
-                <CoverImage src="./Pet.png" />
-                <PetsName> ID: {props.pets.id}</PetsName>
-                <PetsName> Name: {props.pets.name}</PetsName>
-                <PetsName> Status: {props.pets.status}</PetsName>
-                <UpdateButton onClick={handleUpdateClick}>Update</UpdateButton>
-
-            </PetsDiv>
-            {showUpdatePopup && (
-                <PetUpdatePopup
-                    pet={props.pets}
-                    onUpdate={() => {
-                        // Handle update logic here
-                        setShowUpdatePopup(false);
-                    }}
-                    onClose={() => setShowUpdatePopup(false)}
-                />
-            )}
+          <p>Are you sure you want to delete?</p>
+          <Button bgColor="green" onClick={handleDeleteConfirmation}>Yes</Button>
+          <Button bgColor="red" onClick={() => setShowDeletePopup(false)}>No</Button>
         </div>
-    );
-
-}
+      )}
+    </div>
+  );
+};
 
 export default PetList;
