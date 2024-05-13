@@ -1,42 +1,75 @@
-import React from "react"
+import React,{useState} from "react"
 import styled from "styled-components"
-
-
+import PetUpdatePopup from "./PetUpdatePopup";
 const PetsDiv = styled.div`
-display:flex;
-flex-direction:column;
-padding:10px;
-width:280px;
-box-shadow:0 3px 10px 0 #aaa;
-cursor:pointer;
-`
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  width: 280px;
+  box-shadow: 0 3px 10px 0 #aaa;
+  cursor: pointer;
+`;
+
 const CoverImage = styled.img`
-height:362px;
-object-fit:cover; 
-`
+  height: 362px;
+  object-fit: cover; 
+`;
+
 const PetsName = styled.span`
-font-size:18px;
-font-weight:600;
-color:black;
-margin: 15px 0;
-white-space:nowrap;
-text-overflow:ellipsis;
-overflow:hidden;
-`
+  font-size: 18px;
+  font-weight: 600;
+  color: black;
+  margin: 15px 0;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+`;
+
+const UpdateButton = styled.button`
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+`;
 
 const PetList = (props) => {
-   
-    const imageURL = props.pets.photoUrls.filter(url => url && (url.startsWith('http://') || url.startsWith('https://')))
-    console.log(imageURL[0])
+    const [showUpdatePopup, setShowUpdatePopup] = useState(false);
+    const imageURL = props.pets.photoUrls.filter(url => url && (url.startsWith('http://') || url.startsWith('https://')));
+
+    const handleUpdateClick = () => {
+        setShowUpdatePopup(true);
+      };
     return (
-        <PetsDiv>
+        <div>
+            <PetsDiv>
+                {imageURL[0] !== undefined ? (
+                    <CoverImage src={imageURL[0]} />
+                ) : (
+                    "Image Not Available"
+                )}
+                <PetsName> ID: {props.pets.id}</PetsName>
+                <PetsName> Name: {props.pets.name}</PetsName>
+                <PetsName> Status: {props.pets.status}</PetsName>
+                <UpdateButton onClick={handleUpdateClick}>Update</UpdateButton>
 
-            { imageURL[0]!==undefined ? <CoverImage src={imageURL[0]}></CoverImage>: "Image Not Available"}
+            </PetsDiv>
+            {showUpdatePopup && (
+                <PetUpdatePopup
+                    pet={props.pets}
+                    onUpdate={() => {
+                        // Handle update logic here
+                        setShowUpdatePopup(false);
+                    }}
+                    onClose={() => setShowUpdatePopup(false)}
+                />
+            )}
+        </div>
+    );
 
-            <PetsName> Name : {props.pets.name}</PetsName>
-            <PetsName> Status: {props.pets.status}</PetsName>
-        </PetsDiv>
-    )
 }
 
 export default PetList;

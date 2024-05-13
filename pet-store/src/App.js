@@ -60,9 +60,9 @@ const App = () => {
 // Filter out duplicates based on the "name" property
 const uniqueData = petsInfo.reduce((acc, current) => {
     // Check if the name is already in the uniqueNames object
-    if (!uniqueNames[current.name]) {
+    if (!uniqueNames[current.id]) {
         // If not, add it to the uniqueNames object and push it to the accumulator array
-        uniqueNames[current.name] = true;
+        uniqueNames[current.id] = true;
         acc.push(current);
     }
     return acc;
