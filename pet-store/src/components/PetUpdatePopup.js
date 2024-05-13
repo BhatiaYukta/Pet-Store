@@ -6,10 +6,11 @@ const Popup = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: white;
+  background-color: grey;
   padding: 20px;
   border-radius: 8px;
   width: 50%;
+  height:100%
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 `;
 
@@ -44,52 +45,92 @@ const UpdateButton = styled.button`
   cursor: pointer;
 `;
 
+const SuccessMessage = styled.div`
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  color:black
+  padding: 10px 20px;
+  border-radius: 6px;
+`;
+
 const PetUpdatePopup = ({ pet, onUpdate, onClose }) => {
-  const [name, setName] = useState(pet.name);
-  const [status, setStatus] = useState(pet.status);
-  const [photoUrls, setPhotoUrls] = useState(pet.photoUrls.join(", "));
+    const [name, setName] = useState(pet.name);
+    const [status, setStatus] = useState(pet.status);
+    const [photoUrls, setPhotoUrls] = useState(pet.photoUrls.join(", "));
+    const [showSuccessMessage, setShowSuccessMessage] = useState("");
 
-  const handleUpdate = () => {
-    const updatedPet = {
-      id: pet.id,
-      name: name,
-      photoUrls: photoUrls.split(",").map(url => url.trim()),
-      status: status
+    const handleUpdate = () => {
+        const updatedPet = {
+            id: pet.id,
+            name: name,
+            photoUrls: photoUrls.split(",").map(url => url.trim()),
+            status: status
+        };
+        onUpdate(updatedPet);
+
+        fetch("https://petstore.swagger.io/v2/pet", {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedPet)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Pet Updated Successfully:', data);
+                setShowSuccessMessage("Pet Updated Successfully");
+            
+                setTimeout(() => {
+               
+                    setShowSuccessMessage("");
+                }, 5000);
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Handle error
+            });
     };
-    onUpdate(updatedPet);
-    console.log("updatePet",updatedPet)
-  };
+  
 
-  return (
-    <Popup>
-      <CloseButton onClick={onClose}>Close</CloseButton>
-      <InputLabel>
-        Name:
-        <InputField
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </InputLabel>
-      <InputLabel>
-        Status:
-        <InputField
-          type="text"
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
-        />
-      </InputLabel>
-      <InputLabel>
-        Photo URLs (comma separated):
-        <InputField
-          type="text"
-          value={photoUrls}
-          onChange={(e) => setPhotoUrls(e.target.value)}
-        />
-      </InputLabel>
-      <UpdateButton onClick={handleUpdate}>Update</UpdateButton>
-    </Popup>
-  );
+    return (
+        <Popup>
+            <CloseButton onClick={onClose}>Close</CloseButton>
+            <br></br>
+
+            <br></br>
+            <InputLabel>
+                Name:
+                <InputField
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                />
+            </InputLabel>
+            <InputLabel>
+                Status:
+                <InputField
+                    type="text"
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value)}
+                />
+            </InputLabel>
+            
+                <SuccessMessage>{showSuccessMessage}</SuccessMessage>
+            
+            <UpdateButton onClick={handleUpdate}>Update</UpdateButton>
+           
+            <br></br>
+        </Popup>
+    );
 };
 
 export default PetUpdatePopup;

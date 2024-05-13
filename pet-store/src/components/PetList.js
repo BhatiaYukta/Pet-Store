@@ -26,7 +26,7 @@ const PetsName = styled.span`
 `;
 
 const UpdateButton = styled.button`
-  background-color: #007bff;
+  background-color: grey;
   color: white;
   border: none;
   border-radius: 4px;
@@ -46,11 +46,12 @@ const PetList = (props) => {
     return (
         <div>
             <PetsDiv>
-                {imageURL[0] !== undefined ? (
+                {/* {imageURL[0] !== undefined ? (
                     <CoverImage src={imageURL[0]} />
                 ) : (
                     "Image Not Available"
-                )}
+                )} */}
+                <CoverImage src="./Pet.png" />
                 <PetsName> ID: {props.pets.id}</PetsName>
                 <PetsName> Name: {props.pets.name}</PetsName>
                 <PetsName> Status: {props.pets.status}</PetsName>
