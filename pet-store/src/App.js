@@ -3,6 +3,7 @@ import styled from "styled-components"
 
 import PetList from "./components/PetList";
 import AddPet from "./components/AddPet";
+import Signup from "./components/SignUp";
 const Container = styled.div`
 display: flex,
 flex-direction:column;
@@ -42,7 +43,7 @@ const MovieListContainer = styled.div`
 
 const App = () => {
   const [petsInfo, setPetsInfo] = useState([])
- 
+
 
   useEffect(() => {
     fetch("https://petstore.swagger.io/v2/pet/findByStatus?status=available")
@@ -53,33 +54,34 @@ const App = () => {
         console.log(data[0]["name"]);
         setPetsInfo(data)
       });
-  },[])
- 
+  }, [])
+
   const uniqueNames = {};
 
-// Filter out duplicates based on the "name" property
-const uniqueData = petsInfo.reduce((acc, current) => {
+  // Filter out duplicates based on the "name" property
+  const uniqueData = petsInfo.reduce((acc, current) => {
     // Check if the name is already in the uniqueNames object
     if (!uniqueNames[current.id]) {
-        // If not, add it to the uniqueNames object and push it to the accumulator array
-        uniqueNames[current.id] = true;
-        acc.push(current);
+      // If not, add it to the uniqueNames object and push it to the accumulator array
+      uniqueNames[current.id] = true;
+      acc.push(current);
     }
     return acc;
-}, []);
+  }, []);
   return (
     <Container>
       <Header>
         <AppName>
-          <PetSoreImage src="/image.png"></PetSoreImage> 
+          <PetSoreImage src="/image.png"></PetSoreImage>
           Pet Store
         </AppName>
+        <Signup/>
       </Header>
-      <AddPet/>
+      <AddPet />
       <MovieListContainer>
         {uniqueData?.length
-                    ? uniqueData.map((pets, index) => (<PetList key={index} pets={pets} />)
-                    ) : <span style={{ color: "black" }}>Loading...</span>}
+          ? uniqueData.map((pets, index) => (<PetList key={index} pets={pets} />)
+          ) : <span style={{ color: "black" }}>Loading...</span>}
       </MovieListContainer>
     </Container>
   )
