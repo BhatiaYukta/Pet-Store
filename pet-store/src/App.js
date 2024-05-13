@@ -79,7 +79,7 @@ const uniqueData = petsInfo.reduce((acc, current) => {
       <MovieListContainer>
         {uniqueData?.length
                     ? uniqueData.map((pets, index) => (<PetList key={index} pets={pets} />)
-                    ) : <span style={{ color: "black" }}>"No pets Search"</span>}
+                    ) : <span style={{ color: "black" }}>Loading...</span>}
       </MovieListContainer>
     </Container>
   )
