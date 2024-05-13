@@ -2,13 +2,13 @@
 
 Feature: 
 
-Allows user to Add a new Pet
-Allows user to update a existing Pet
-Allows user to delete a existing Pet
-Login Functionality
-Logout Functionality
-Idle timeout after 2 minutes
-Proper data management
+- Allows user to Add a new Pet
+- Allows user to update a existing Pet
+- Allows user to delete a existing Pet
+- Login Functionality
+- Logout Functionality
+- Idle timeout after 2 minutes
+- Proper data management
 
 Libraries : 
 
