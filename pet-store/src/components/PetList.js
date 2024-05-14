@@ -45,7 +45,7 @@ const Button = styled.button`
 const PetList = (props) => {
   const [showUpdatePopup, setShowUpdatePopup] = useState(false);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
-  const imageURL = props.pets.photoUrls.filter(url => url && (url.startsWith('http://') || url.startsWith('https://')));
+  // const imageURL = props.pets.photoUrls.filter(url => url && (url.startsWith('http://') || url.startsWith('https://')));
 
   const handleUpdateClick = () => {
     setShowUpdatePopup(true);
